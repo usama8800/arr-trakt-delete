@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 
 
 export async function sendDiscordMessage(content: any) {
+    if (!process.env.discordHook) return;
     let sent = false;
     while (!sent) {
         try {

@@ -12,3 +12,10 @@ To get trakt id and secret go to [trakt api settings](https://trakt.tv/oauth/app
 and `Redirect Uri` which should be set to `urn:ietf:wg:oauth:2.0:oob`
 
 If you access Sonarr via http://localhost:8989, `sonarr_url` would be http://localhost:8989/api/v3/
+
+`discordHook` is optional. Sends a notification when deleting an episode
+
+## APIs
+
+- [Sonarr](https://github.com/Sonarr/Sonarr/wiki/API)
+- [Trakt.tv npm](https://github.com/vankasteelj/trakt.tv)
