@@ -21,6 +21,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
-    "trakt.tv": "^8.1.1"
+    "trakt.tv": "^8.1.1",
+    "transmission": "^0.4.10"
   }
 }

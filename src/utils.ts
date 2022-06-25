@@ -1,5 +1,15 @@
 import axios, { AxiosError } from 'axios';
 
+export async function promisify(obj: { _this?: any, func: any }, ...args: any[]) {
+    return new Promise<any>((resolve, reject) => {
+        args.push((err, result) => {
+            if (err) return reject(err);
+            return resolve(result);
+        });
+        if (obj._this) obj.func = obj.func.bind(obj._this);
+        obj.func(...args);
+    });
+}
 
 export async function sendDiscordMessage(content: any) {
     if (!process.env.discordHook) return;

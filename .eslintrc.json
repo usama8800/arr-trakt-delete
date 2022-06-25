@@ -63,7 +63,8 @@
             {
                 "code": 140,
                 "ignoreTemplateLiterals": true,
-                "ignoreStrings": true
+                "ignoreStrings": true,
+                "ignoreComments": true
             }
         ]
     }

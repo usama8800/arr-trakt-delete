@@ -3,3 +3,4 @@ out/
 .env
 token.json
 last_activities.json
+exclude.txt
