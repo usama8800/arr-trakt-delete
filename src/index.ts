@@ -38,6 +38,7 @@ async function main() {
 
         for (const watched of new_watched) {
             const series = allSeries.data.find(s => s.tvdbId === watched.show.ids.tvdb);
+            if (!series) continue;
             const episodes = await sonarr.getEpisodes(series.id);
             const episode = episodes.data.find(e => e.tvdbId === watched.episode.ids.tvdb);
             const episodeFileId: number = episode.episodeFileId;
