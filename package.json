@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "node -r ts-node/register ./src/index.ts",
-    "test": "nodemon --config nodemon.test.json",
+    "dev": "nodemon",
     "build": "tsc"
   },
   "author": "",

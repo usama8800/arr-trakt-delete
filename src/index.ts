@@ -1,11 +1,13 @@
 import { AxiosError } from 'axios';
 import dotenv from 'dotenv';
+import * as fs from 'fs';
 import { Sonarr } from './sonarr';
 import { Trakt } from './trakt';
 import { sendDiscordMessage } from './utils';
-import * as fs from 'fs';
 
 dotenv.config();
+process.env.auto = process.argv[2];
+console.log(process.env.auto);
 
 function getExludes() {
     let ret: string[] = [];
@@ -29,7 +31,8 @@ async function main() {
         const excludes = getExludes();
 
         const trakt = new Trakt();
-        await trakt.authorize();
+        const authorized = await trakt.authorize();
+        if (!authorized) return;
         const new_watched = await trakt.newWatched();
         if (!new_watched.length) return;
 
@@ -37,6 +40,7 @@ async function main() {
         const allSeries = await sonarr.getAllSeries();
 
         for (const watched of new_watched) {
+            if (!watched.show) continue;
             const series = allSeries.data.find(s => s.tvdbId === watched.show.ids.tvdb);
             if (!series) continue;
             const episodes = await sonarr.getEpisodes(series.id);

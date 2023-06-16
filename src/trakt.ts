@@ -1,6 +1,7 @@
 import fs from 'fs';
-import TraktAPI from 'trakt.tv';
 import readline from 'readline';
+import TraktAPI from 'trakt.tv';
+import { sendDiscordMessage } from './utils';
 
 export class Trakt {
     trakt: any;
@@ -17,30 +18,37 @@ export class Trakt {
 
     async authorize() {
         if (fs.existsSync('token.json')) {
-            const token = JSON.parse(fs.readFileSync('token.json').toString());
-            if (token && token !== {}) {
+            try {
+                const token = JSON.parse(fs.readFileSync('token.json').toString());
                 const newToken = await this.trakt.import_token(token);
                 fs.writeFileSync('token.json', JSON.stringify(newToken));
-                return;
-            }
+                return true;
+                // eslint-disable-next-line no-empty
+            } catch (error) { }
         }
 
-        const traktAuthUrl = this.trakt.get_url();
-        console.log('Authorize this app by visiting this url:', traktAuthUrl);
+        if (process.env.auto === 'auto') {
+            await sendDiscordMessage('Trakt authorization required for arr-trakt-delete');
+            return false;
+        } else {
+            const traktAuthUrl = this.trakt.get_url();
+            console.log('Authorize this app by visiting this url:', traktAuthUrl);
 
-        const code = await new Promise<string>(resolve => {
-            const rl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout,
+            const code = await new Promise<string>(resolve => {
+                const rl = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout,
+                });
+                rl.question('Enter the code from that page here: ', (codeIn) => {
+                    rl.close();
+                    resolve(codeIn);
+                });
             });
-            rl.question('Enter the code from that page here: ', (codeIn) => {
-                rl.close();
-                resolve(codeIn);
-            });
-        });
-        await this.trakt.exchange_code(code);
-        const token = this.trakt.export_token();
-        fs.writeFileSync('token.json', JSON.stringify(token));
+            await this.trakt.exchange_code(code);
+            const token = this.trakt.export_token();
+            fs.writeFileSync('token.json', JSON.stringify(token));
+        }
+        return true;
     }
 
     async newWatched() {
